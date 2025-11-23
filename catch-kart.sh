@@ -505,8 +505,11 @@ shorten() {
 	if [[ "$1" == *"shrtco.de"* ]]; then
 		processed_url=$(echo ${short} | sed 's/\\//g' | grep -o '"short_link2":"[a-zA-Z0-9./-]*' | awk -F\" '{print $4}')
 	else
-		# processed_url=$(echo "$short" | awk -F// '{print $NF}')
-		processed_url=${short#http*//}
+		processed_url=${short#http//*}
+	fi
+	# إذا فشل الاختصار، استخدم الرابط الأصلي
+	if [[ -z "$processed_url" || "$processed_url" == "Unable to Short URL" ]]; then
+		processed_url="$2"
 	fi
 }
 
@@ -530,9 +533,8 @@ custom_url() {
 		masked_url="$mask@$processed_url"
 		processed_url="https://$processed_url"
 	else
-		# echo "[!] No url provided / Regex Not Matched"
 		url="Unable to generate links. Try after turning on hotspot"
-		processed_url="Unable to Short URL"
+		processed_url="$url"
 	fi
 
 	echo -e "\n${RED}[${WHITE}-${RED}]${BLUE} URL 1 : ${GREEN}$url"
